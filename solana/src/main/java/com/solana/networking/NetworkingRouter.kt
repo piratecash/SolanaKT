@@ -26,41 +26,48 @@ class HttpNetworkingRouter(
         resultSerializer: KSerializer<R>
     ): RpcResponse<R> =
         suspendCancellableCoroutine { continuation ->
-            val url = endpoint.url
-            with(url.openConnection() as HttpURLConnection) {
-                // config
-                setRequestProperty("Content-Type", "application/json; charset=utf-8")
-                requestMethod = "POST"
-                doOutput = true
+            runCatching {
+                val url = endpoint.url
+                with(url.openConnection() as HttpURLConnection) {
+                    // config
+                    setRequestProperty("Content-Type", "application/json; charset=utf-8")
+                    requestMethod = "POST"
+                    doOutput = true
 
-                // cancellation
-                continuation.invokeOnCancellation { disconnect() }
+                    // cancellation
+                    continuation.invokeOnCancellation { disconnect() }
 
-                // send request body
-                outputStream.write(
-                    json.encodeToString(RpcRequest.serializer(), request).toByteArray()
-                )
-                outputStream.close()
+                    // send request body
+                    outputStream.write(
+                        json.encodeToString(RpcRequest.serializer(), request).toByteArray()
+                    )
+                    outputStream.close()
 
-                when (responseCode) {
-                    HttpURLConnection.HTTP_OK -> {
-                        try {
-                            val responseString = inputStream.bufferedReader().use { it.readText() }
+                    when (responseCode) {
+                        HttpURLConnection.HTTP_OK -> {
+                            try {
+                                val responseString =
+                                    inputStream.bufferedReader().use { it.readText() }
 
-                            val decoded = json.decodeFromString(
-                                RpcResponse.serializer(resultSerializer), responseString)
-                            continuation.resumeWith(
-                                Result.success(decoded)
-                            )
-                        } catch (e: SerializationException){
-                            continuation.resumeWithException(e)
+                                val decoded = json.decodeFromString(
+                                    RpcResponse.serializer(resultSerializer), responseString
+                                )
+                                continuation.resumeWith(
+                                    Result.success(decoded)
+                                )
+                            } catch (e: SerializationException) {
+                                continuation.resumeWithException(e)
+                            }
+                        }
+
+                        else -> {
+                            val errorString = errorStream.bufferedReader().use { it.readText() }
+                            continuation.resumeWithException(Exception(errorString))
                         }
                     }
-                    else -> {
-                        val errorString = errorStream.bufferedReader().use { it.readText() }
-                        continuation.resumeWithException(Exception(errorString))
-                    }
                 }
+            }.onFailure {
+                continuation.resumeWithException(it)
             }
         }
 
