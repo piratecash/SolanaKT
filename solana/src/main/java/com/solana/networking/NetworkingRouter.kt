@@ -1,12 +1,11 @@
 package com.solana.networking
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import java.lang.Exception
 import java.net.HttpURLConnection
-import kotlin.coroutines.resumeWithException
 
 interface NetworkingRouter : JsonRpcDriver {
     val endpoint: RPCEndpoint
@@ -21,12 +20,13 @@ class HttpNetworkingRouter(
         ignoreUnknownKeys = true
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun <R> makeRequest(
         request: RpcRequest,
         resultSerializer: KSerializer<R>
     ): RpcResponse<R> =
         suspendCancellableCoroutine { continuation ->
-            runCatching {
+            try {
                 val url = endpoint.url
                 with(url.openConnection() as HttpURLConnection) {
                     // config
@@ -55,21 +55,40 @@ class HttpNetworkingRouter(
                                 continuation.resumeWith(
                                     Result.success(decoded)
                                 )
-                            } catch (e: SerializationException) {
-                                continuation.resumeWithException(e)
+                            } catch (ex: SerializationException) {
+                                continuation.resume(
+                                    RpcResponse<R>(
+                                        error = RpcError(
+                                            code = -1,
+                                            message = ex.message ?: "Unknown error"
+                                        )
+                                    )
+                                ) {}
                             }
                         }
 
                         else -> {
                             val errorString = errorStream.bufferedReader().use { it.readText() }
-                            continuation.resumeWithException(Exception(errorString))
+                            continuation.resume(
+                                RpcResponse<R>(
+                                    error = RpcError(
+                                        code = -1,
+                                        message = errorString
+                                    )
+                                )
+                            ) {}
                         }
                     }
                 }
-            }.onFailure {
-                continuation.resumeWithException(it)
+            } catch (ex: Exception) {
+                continuation.resume(
+                    RpcResponse<R>(
+                        error = RpcError(
+                            code = -1,
+                            message = ex.message ?: "Unknown error"
+                        )
+                    )
+                ) {}
             }
         }
-
 }
-
