@@ -82,7 +82,11 @@ class HttpNetworkingRouter(
                                     error = RpcError(
                                         code = -1,
                                         message = errorString
-                                    )
+                                    ).also {
+                                        if(retryAfter != null) {
+                                            it.retryAfter = retryAfter
+                                        }
+                                    }
                                 )
                             ) {}
                         }
