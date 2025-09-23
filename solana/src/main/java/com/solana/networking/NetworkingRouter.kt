@@ -15,6 +15,10 @@ class HttpNetworkingRouter(
     override val endpoint: RPCEndpoint,
 ) : NetworkingRouter {
 
+    companion object {
+        const val RETRY_AFTER_HEADER = "Retry-After"
+    }
+
     private val json = Json {
         encodeDefaults = true
         ignoreUnknownKeys = true
@@ -52,7 +56,7 @@ class HttpNetworkingRouter(
                                 val decoded = json.decodeFromString(
                                     RpcResponse.serializer(resultSerializer), responseString
                                 )
-                                decoded.retryAfter = getHeaderField("Retry-After")?.toLongOrNull()
+                                decoded.retryAfter = getHeaderField(RETRY_AFTER_HEADER)?.toLongOrNull()
                                 continuation.resumeWith(
                                     Result.success(decoded)
                                 )
@@ -63,7 +67,7 @@ class HttpNetworkingRouter(
                                             code = -1,
                                             message = ex.message ?: "Unknown error"
                                         ).also {
-                                            it.retryAfter = getHeaderField("Retry-After")?.toLongOrNull()
+                                            it.retryAfter = getHeaderField(RETRY_AFTER_HEADER)?.toLongOrNull()
                                         }
                                     )
                                 ) {}
@@ -78,7 +82,7 @@ class HttpNetworkingRouter(
                                         code = -1,
                                         message = errorString
                                     ).also {
-                                        it.retryAfter = getHeaderField("Retry-After")?.toLongOrNull()
+                                        it.retryAfter = getHeaderField(RETRY_AFTER_HEADER)?.toLongOrNull()
                                     }
                                 )
                             ) {}
