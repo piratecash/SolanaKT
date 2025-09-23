@@ -43,6 +43,7 @@ class HttpNetworkingRouter(
                     )
                     outputStream.close()
 
+                    val retryAfter = getHeaderField("Retry-After")?.toLongOrNull()
                     when (responseCode) {
                         HttpURLConnection.HTTP_OK -> {
                             try {
@@ -52,6 +53,9 @@ class HttpNetworkingRouter(
                                 val decoded = json.decodeFromString(
                                     RpcResponse.serializer(resultSerializer), responseString
                                 )
+                                if(retryAfter != null) {
+                                    decoded.retryAfter = retryAfter
+                                }
                                 continuation.resumeWith(
                                     Result.success(decoded)
                                 )
@@ -61,7 +65,11 @@ class HttpNetworkingRouter(
                                         error = RpcError(
                                             code = -1,
                                             message = ex.message ?: "Unknown error"
-                                        )
+                                        ).also {
+                                            if(retryAfter != null) {
+                                                it.retryAfter = retryAfter
+                                            }
+                                        }
                                     )
                                 ) {}
                             }
