@@ -4,8 +4,8 @@ import com.solana.programs.TokenProgram
 import com.solana.vendor.ByteUtils
 import com.solana.vendor.TweetNaclFast
 import com.solana.vendor.borshj.*
-import org.bitcoinj.core.Base58
-import org.bitcoinj.core.Sha256Hash
+import org.bitcoinj.base.Base58
+import org.bitcoinj.base.Sha256Hash
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*

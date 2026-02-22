@@ -1,10 +1,9 @@
 package com.solana.core
 
 import com.solana.programs.SystemProgram.transfer
-import org.bitcoinj.core.Base58
+import org.bitcoinj.base.Base58
 import org.junit.Assert
 import org.junit.Test
-import java.util.*
 
 class MessageTest {
     @Test

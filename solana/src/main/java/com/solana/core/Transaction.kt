@@ -2,7 +2,7 @@
 package com.solana.core
 
 import com.solana.vendor.*
-import org.bitcoinj.core.Base58
+import org.bitcoinj.base.Base58
 import java.nio.ByteBuffer
 import java.text.Collator
 import java.util.*

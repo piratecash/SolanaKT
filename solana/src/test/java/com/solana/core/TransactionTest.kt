@@ -2,7 +2,7 @@ package com.solana.core
 
 import com.solana.programs.MemoProgram.writeUtf8
 import com.solana.programs.SystemProgram
-import org.bitcoinj.core.Base58
+import org.bitcoinj.base.Base58
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.*

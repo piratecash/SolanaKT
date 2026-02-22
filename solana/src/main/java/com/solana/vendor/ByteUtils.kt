@@ -1,7 +1,6 @@
 package com.solana.vendor
 
 import okhttp3.internal.and
-import org.bitcoinj.core.Utils
 import java.io.IOException
 import java.io.OutputStream
 import java.math.BigInteger
@@ -21,7 +20,7 @@ object ByteUtils {
 
     @JvmStatic
     fun readUint64(buf: ByteArray, offset: Int): BigInteger {
-        return BigInteger(Utils.reverseBytes(readBytes(buf, offset, UINT_64_LENGTH)))
+        return BigInteger(readBytes(buf, offset, UINT_64_LENGTH).reversedArray())
     }
 
     fun readUint64Price(buf: ByteArray, offset: Int): BigInteger {
@@ -39,7 +38,7 @@ object ByteUtils {
                 throw RuntimeException("Input too large to encode into a uint64")
             }
         }
-        bytes = Utils.reverseBytes(bytes)
+        bytes = bytes.reversedArray()
         stream.write(bytes)
         if (bytes.size < 8) {
             for (i in 0 until 8 - bytes.size) stream.write(0)

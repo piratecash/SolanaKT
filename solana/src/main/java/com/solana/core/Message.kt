@@ -2,9 +2,8 @@
 package com.solana.core
 
 import com.solana.vendor.borshj.BorshBuffer
-import org.bitcoinj.core.Base58
+import org.bitcoinj.base.Base58
 import java.nio.ByteBuffer
-import org.bitcoinj.core.Utils
 
 class MessageHeader {
     var numRequiredSignatures: Byte = 0
@@ -222,11 +221,11 @@ object Shortvec {
             var elem = remLen and 0x7f
             remLen = remLen shr 7
             if (remLen == 0) {
-                Utils.uint16ToByteArrayLE(elem, out, cursor)
+                out[cursor] = elem.toByte()
                 break
             } else {
                 elem = elem or 0x80
-                Utils.uint16ToByteArrayLE(elem, out, cursor)
+                out[cursor] = elem.toByte()
                 cursor += 1
             }
         }

@@ -4,7 +4,7 @@ import com.solana.vendor.TweetNaclFast
 import com.solana.vendor.bip32.wallet.DerivableType
 import com.solana.vendor.bip32.wallet.SolanaBip44
 import junit.framework.Assert.assertEquals
-import org.bitcoinj.core.Base58
+import org.bitcoinj.base.Base58
 import org.bitcoinj.crypto.MnemonicCode
 import org.junit.Assert
 import org.junit.Test
