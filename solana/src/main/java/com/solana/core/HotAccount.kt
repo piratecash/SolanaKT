@@ -20,6 +20,7 @@ sealed class DerivationPath(val path: String) {
 
 interface Account {
     val publicKey: PublicKey
+    val supportsPriorityFees: Boolean get() = true
     fun sign(serializedMessage: ByteArray): ByteArray
 }
 

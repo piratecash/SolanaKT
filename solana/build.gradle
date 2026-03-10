@@ -70,6 +70,15 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
+                groupId = 'com.github.piratecash'
+                artifactId = 'SolanaKT'
+                version = providers.environmentVariable("SHORT_SHA").getOrElse("local")
+            }
+        }
+        repositories {
+            maven {
+                name = "local"
+                url = uri(layout.buildDirectory.dir("maven-repo"))
             }
         }
     }
