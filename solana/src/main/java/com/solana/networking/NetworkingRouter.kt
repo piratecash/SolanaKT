@@ -13,6 +13,7 @@ interface NetworkingRouter : JsonRpcDriver {
 
 class HttpNetworkingRouter(
     override val endpoint: RPCEndpoint,
+    private val errorListener: NetworkRequestErrorListener? = null,
 ) : NetworkingRouter {
 
     companion object {
@@ -28,10 +29,11 @@ class HttpNetworkingRouter(
     override suspend fun <R> makeRequest(
         request: RpcRequest,
         resultSerializer: KSerializer<R>
-    ): RpcResponse<R> =
-        suspendCancellableCoroutine { continuation ->
+    ): RpcResponse<R> {
+        val url = endpoint.url
+
+        return suspendCancellableCoroutine { continuation ->
             try {
-                val url = endpoint.url
                 with(url.openConnection() as HttpURLConnection) {
                     // config
                     setRequestProperty("Content-Type", "application/json; charset=utf-8")
@@ -90,6 +92,15 @@ class HttpNetworkingRouter(
                     }
                 }
             } catch (ex: Exception) {
+                errorListener?.onRequestError(
+                    NetworkRequestError(
+                        method = request.method,
+                        url = url.toString(),
+                        host = url.host,
+                        resolvedIps = url.resolveHostAddresses(),
+                        throwable = ex
+                    )
+                )
                 continuation.resume(
                     RpcResponse<R>(
                         error = RpcError(
@@ -100,4 +111,5 @@ class HttpNetworkingRouter(
                 ) {}
             }
         }
+    }
 }
