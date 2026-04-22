@@ -1,0 +1,129 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.github.piratecash",
+    "module": "SolanaKT",
+    "version": "5d5a0cb",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.11.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "files": [
+        {
+          "name": "SolanaKT-5d5a0cb.aar",
+          "url": "SolanaKT-5d5a0cb.aar",
+          "size": 1167694,
+          "sha512": "2d43ef2e993e33e1f14ca4d47e3b7af0c4217666a37889c5dc38591967e63424259b662fbed116a767e2e059af04cbfd06d0795c61648ec097ac1d632529110d",
+          "sha256": "27b965fae75f2facc72700bfb1281fbe453368d123907f6e576c687637c3262d",
+          "sha1": "ecf0e297deee5dfd75af53a13a475903b99a2141",
+          "md5": "5b5de11c260771d62b1172b151c0a2db"
+        }
+      ]
+    },
+    {
+      "name": "releaseRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.8.21"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp",
+          "version": {
+            "requires": "4.9.0"
+          }
+        },
+        {
+          "group": "org.bitcoinj",
+          "module": "bitcoinj-core",
+          "version": {
+            "requires": "0.17"
+          }
+        },
+        {
+          "group": "net.i2p.crypto",
+          "module": "eddsa",
+          "version": {
+            "requires": "0.3.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "1.8.21"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.6.4"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-serialization-json",
+          "version": {
+            "requires": "1.4.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "SolanaKT-5d5a0cb.aar",
+          "url": "SolanaKT-5d5a0cb.aar",
+          "size": 1167694,
+          "sha512": "2d43ef2e993e33e1f14ca4d47e3b7af0c4217666a37889c5dc38591967e63424259b662fbed116a767e2e059af04cbfd06d0795c61648ec097ac1d632529110d",
+          "sha256": "27b965fae75f2facc72700bfb1281fbe453368d123907f6e576c687637c3262d",
+          "sha1": "ecf0e297deee5dfd75af53a13a475903b99a2141",
+          "md5": "5b5de11c260771d62b1172b151c0a2db"
+        }
+      ]
+    },
+    {
+      "name": "releaseSourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "files": [
+        {
+          "name": "SolanaKT-5d5a0cb-sources.jar",
+          "url": "SolanaKT-5d5a0cb-sources.jar",
+          "size": 317345,
+          "sha512": "0ed2939e2534a559777b15d817b228db6a9eef93b66ede11e3a89b0d0269ec345724f83e1e1028b5059d7ea688a1c04396911a43adeb4bb44e8fb163d0d26f29",
+          "sha256": "4bd3663bae3bdc9555fae69e00e2dc3128a82847e09ec12341704be603f92114",
+          "sha1": "dbd2527b767dc333d25dff02e1df47094a394bd9",
+          "md5": "0168a66dc1219e1f189a2f4030a33e94"
+        }
+      ]
+    }
+  ]
+}
