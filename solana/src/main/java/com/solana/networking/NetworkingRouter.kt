@@ -92,7 +92,7 @@ class HttpNetworkingRouter(
                     }
                 }
             } catch (ex: Exception) {
-                errorListener?.onRequestError(
+                errorListener.emitSafely {
                     NetworkRequestError(
                         method = request.method,
                         url = url.toString(),
@@ -100,7 +100,7 @@ class HttpNetworkingRouter(
                         resolvedIps = url.resolveHostAddresses(),
                         throwable = ex
                     )
-                )
+                }
                 continuation.resume(
                     RpcResponse<R>(
                         error = RpcError(
