@@ -4,11 +4,12 @@ import com.solana.networking.HttpNetworkingRouter
 import com.solana.networking.Network
 import com.solana.networking.RPCEndpoint
 import com.solana.networking.socket.SolanaSocket
-import com.solana.solana.BuildConfig
 import java.net.URL
 
 object SolanaTestsUtils {
-    const val RPC_URL = BuildConfig.RPC_URL
+    val RPC_URL: String = checkNotNull(System.getenv("SOLANA_RPC_URL")) {
+        "SOLANA_RPC_URL is not set; run tests through Gradle's :solana:test task"
+    }
 }
 
 fun SolanaTestsUtils.generateSolanaConnection() =
