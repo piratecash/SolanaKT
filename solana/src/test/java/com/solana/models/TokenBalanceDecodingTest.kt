@@ -12,35 +12,43 @@ class TokenBalanceDecodingTest {
 
     @Test
     fun decodeMeta_tokenBalanceWithOwner_returnsOwnerWallet() {
-        val metaJson = """
-            {
-                "err": null,
-                "fee": 5000,
-                "innerInstructions": [],
-                "preTokenBalances": [],
-                "postTokenBalances": [
-                    {
-                        "accountIndex": 1,
-                        "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-                        "owner": "OWNER_WALLET",
-                        "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
-                        "uiTokenAmount": {
-                            "amount": "1493856",
-                            "decimals": 6,
-                            "uiAmount": 1.493856,
-                            "uiAmountString": "1.493856"
-                        }
+        val postTokenBalances = """
+            [
+                {
+                    "accountIndex": 1,
+                    "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "owner": "OWNER_WALLET",
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                    "uiTokenAmount": {
+                        "amount": "1493856",
+                        "decimals": 6,
+                        "uiAmount": 1.493856,
+                        "uiAmountString": "1.493856"
                     }
-                ],
-                "postBalances": [],
-                "preBalances": [],
-                "status": { "Ok": null }
-            }
-        """.trimIndent()
+                }
+            ]
+        """
 
-        val meta = json.decodeFromString(Meta.serializer(), metaJson)
+        val meta = json.decodeFromString(Meta.serializer(), metaJson(postTokenBalances = postTokenBalances))
 
         assertEquals("OWNER_WALLET", meta.postTokenBalances[0].owner)
+    }
+
+    @Test
+    fun decodeMeta_withLoadedAddresses_returnsWritableAndReadonly() {
+        val loadedAddresses = """"loadedAddresses": { "writable": ["W1"], "readonly": ["R1"] },"""
+
+        val meta = json.decodeFromString(Meta.serializer(), metaJson(extraFields = loadedAddresses))
+
+        assertEquals(listOf("W1"), meta.loadedAddresses?.writable)
+        assertEquals(listOf("R1"), meta.loadedAddresses?.readonly)
+    }
+
+    @Test
+    fun decodeMeta_withoutLoadedAddresses_returnsNullLoadedAddresses() {
+        val meta = json.decodeFromString(Meta.serializer(), metaJson())
+
+        assertNull(meta.loadedAddresses)
     }
 
     @Test
@@ -62,4 +70,18 @@ class TokenBalanceDecodingTest {
 
         assertNull(tokenBalance.owner)
     }
+
+    private fun metaJson(postTokenBalances: String = "[]", extraFields: String = "") = """
+        {
+            $extraFields
+            "err": null,
+            "fee": 5000,
+            "innerInstructions": [],
+            "preTokenBalances": [],
+            "postTokenBalances": $postTokenBalances,
+            "postBalances": [],
+            "preBalances": [],
+            "status": { "Ok": null }
+        }
+    """
 }

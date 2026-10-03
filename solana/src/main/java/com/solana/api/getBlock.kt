@@ -93,7 +93,14 @@ data class Meta(
     val postTokenBalances: List<TokenBalance>,
     val postBalances: List<Long>,
     val preBalances: List<Long>,
-    val status: Status
+    val status: Status,
+    val loadedAddresses: LoadedAddresses? = null
+)
+
+@Serializable
+data class LoadedAddresses(
+    val writable: List<String> = emptyList(),
+    val readonly: List<String> = emptyList()
 )
 
 @Serializable
