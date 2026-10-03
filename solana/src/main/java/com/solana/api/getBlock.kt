@@ -80,7 +80,8 @@ data class Status(
 data class TokenBalance(
     val accountIndex: Double,
     val mint: String,
-    val uiTokenAmount: TokenAmountInfo
+    val uiTokenAmount: TokenAmountInfo,
+    val owner: String? = null
 )
 
 @Serializable
