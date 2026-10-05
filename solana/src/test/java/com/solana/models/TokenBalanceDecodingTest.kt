@@ -31,7 +31,7 @@ class TokenBalanceDecodingTest {
 
         val meta = json.decodeFromString(Meta.serializer(), metaJson(postTokenBalances = postTokenBalances))
 
-        assertEquals("OWNER_WALLET", meta.postTokenBalances[0].owner)
+        assertEquals("OWNER_WALLET", meta.postTokenBalances?.single()?.owner)
     }
 
     @Test

@@ -86,11 +86,11 @@ data class TokenBalance(
 
 @Serializable
 data class Meta(
-    val err: JsonObject?,
+    val err: JsonElement?,
     val fee: Long,
-    val innerInstructions: List<Instruction>,
-    val preTokenBalances: List<TokenBalance>,
-    val postTokenBalances: List<TokenBalance>,
+    val innerInstructions: List<Instruction>? = null,
+    val preTokenBalances: List<TokenBalance>? = null,
+    val postTokenBalances: List<TokenBalance>? = null,
     val postBalances: List<Long>,
     val preBalances: List<Long>,
     val status: Status,
