@@ -21,6 +21,17 @@ allprojects {
     }
 }
 
+// Jitpack sets these as env vars; local/CI publish runs may pass them as -P properties instead.
+def resolvePublicationProperty = { name ->
+    providers.environmentVariable(name).orElse(providers.gradleProperty(name))
+}
+
+ext.publicationVersion = resolvePublicationProperty('JITPACK_VERSION')
+    .orElse(resolvePublicationProperty('VERSION'))
+    .orElse(resolvePublicationProperty('VERSION_NAME'))
+    .orElse(provider { 'local' })
+    .get()
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

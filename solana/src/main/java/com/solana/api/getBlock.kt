@@ -80,19 +80,27 @@ data class Status(
 data class TokenBalance(
     val accountIndex: Double,
     val mint: String,
-    val uiTokenAmount: TokenAmountInfo
+    val uiTokenAmount: TokenAmountInfo,
+    val owner: String? = null
 )
 
 @Serializable
 data class Meta(
-    val err: JsonObject?,
+    val err: JsonElement?,
     val fee: Long,
-    val innerInstructions: List<Instruction>,
-    val preTokenBalances: List<TokenBalance>,
-    val postTokenBalances: List<TokenBalance>,
+    val innerInstructions: List<Instruction>? = null,
+    val preTokenBalances: List<TokenBalance>? = null,
+    val postTokenBalances: List<TokenBalance>? = null,
     val postBalances: List<Long>,
     val preBalances: List<Long>,
-    val status: Status
+    val status: Status,
+    val loadedAddresses: LoadedAddresses? = null
+)
+
+@Serializable
+data class LoadedAddresses(
+    val writable: List<String> = emptyList(),
+    val readonly: List<String> = emptyList()
 )
 
 @Serializable

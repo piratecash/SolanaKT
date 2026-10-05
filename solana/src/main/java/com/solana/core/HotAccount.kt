@@ -5,7 +5,7 @@ import com.solana.vendor.bip32.wallet.DerivableType
 import com.solana.vendor.bip32.wallet.SolanaBip44
 import org.bitcoinj.crypto.DeterministicHierarchy
 import org.bitcoinj.crypto.HDKeyDerivation
-import org.bitcoinj.crypto.HDUtils
+import org.bitcoinj.crypto.HDPath
 import org.bitcoinj.crypto.MnemonicCode
 import java.nio.ByteBuffer
 import java.util.*
@@ -20,6 +20,7 @@ sealed class DerivationPath(val path: String) {
 
 interface Account {
     val publicKey: PublicKey
+    val supportsPriorityFees: Boolean get() = true
     fun sign(serializedMessage: ByteArray): ByteArray
 }
 
@@ -83,7 +84,7 @@ class HotAccount : Account {
             val seed = MnemonicCode.toSeed(words, passphrase)
             val masterPrivateKey = HDKeyDerivation.createMasterPrivateKey(seed)
             val deterministicHierarchy = DeterministicHierarchy(masterPrivateKey)
-            val child = deterministicHierarchy[HDUtils.parsePath(DerivationPath.DEPRECATED_M_501H_0H_0_0.path), true, true]
+            val child = deterministicHierarchy[HDPath.parsePath(DerivationPath.DEPRECATED_M_501H_0H_0_0.path), true, true]
             val keyPair = TweetNaclFast.Signature.keyPair_fromSeed(child.privKeyBytes)
             return HotAccount(keyPair)
         }

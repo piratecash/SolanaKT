@@ -13,14 +13,17 @@ import kotlinx.serialization.json.JsonElement
 typealias DefaultRpcResponse = RpcResponse<JsonElement>
 
 @Serializable
-data class RpcError(val code: Int, val message: String)
+data class RpcError(val code: Int, val message: String) {
+    var retryAfter: Long? = null
+}
 
 @Serializable
 open class RpcResponse<R>(
     val result: R? = null,
     val error: RpcError? = null,
-    val id: String? = null
+    val id: String? = null,
 ) {
+    var retryAfter: Long? = null
     val jsonrpc = "2.0"
 }
 

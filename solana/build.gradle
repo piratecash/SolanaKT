@@ -1,76 +1,67 @@
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
     id 'kotlinx-serialization'
     id 'maven-publish'
 }
 
-android {
-    compileSdkVersion 33
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+}
 
-    android.buildFeatures.buildConfig true
-    defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 33
-        versionCode 1
-        versionName version
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-
-        // read RPC URL properties fro testing
-        def defaultRpcUrl = project.properties["testing.rpc.defaultUrl"]
-        def rpcUrl = project.properties["rpcUrl"] ?: defaultRpcUrl
-
-        def useLocalValidator = project.properties["localValidator"].toBoolean()
-        def localRpcUrl = project.properties["testing.rpc.localUrl"]
-        if (useLocalValidator && localRpcUrl != null) rpcUrl = localRpcUrl
-
-        // set RPC URL (used in testing)
-        buildConfigField 'String', 'RPC_URL', "\"${rpcUrl.toString().replace('"', '')}\""
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
+compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
 
-    namespace 'com.solana.solana'
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+// read RPC URL properties for testing
+def defaultRpcUrl = project.properties["testing.rpc.defaultUrl"]
+def rpcUrl = project.properties["rpcUrl"] ?: defaultRpcUrl
+
+def useLocalValidator = project.properties["localValidator"].toBoolean()
+def localRpcUrl = project.properties["testing.rpc.localUrl"]
+if (useLocalValidator && localRpcUrl != null) rpcUrl = localRpcUrl
+
+tasks.test {
+    environment "SOLANA_RPC_URL", rpcUrl.toString()
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
-    implementation 'org.bitcoinj:bitcoinj-core:0.16.2'
+    implementation 'org.bitcoinj:bitcoinj-core:0.17'
     implementation 'net.i2p.crypto:eddsa:0.3.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
 
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
-
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-            }
+publishing {
+    publications {
+        release(MavenPublication) {
+            from components.java
+            groupId = 'com.github.piratecash.SolanaKT'
+            artifactId = 'solana'
+            version = rootProject.ext.publicationVersion
+        }
+    }
+    repositories {
+        maven {
+            name = "local"
+            url = uri(layout.buildDirectory.dir("maven-repo"))
         }
     }
 }

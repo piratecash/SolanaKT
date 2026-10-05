@@ -1,7 +1,5 @@
 package com.solana.vendor
 
-import org.bitcoinj.core.Utils
-
 object ShortvecEncoding {
     @JvmStatic
     fun encodeLength(len: Int): ByteArray {
@@ -12,11 +10,11 @@ object ShortvecEncoding {
             var elem = remLen and 0x7f
             remLen = remLen shr 7
             if (remLen == 0) {
-                Utils.uint16ToByteArrayLE(elem, out, cursor)
+                out[cursor] = elem.toByte()
                 break
             } else {
                 elem = elem or 0x80
-                Utils.uint16ToByteArrayLE(elem, out, cursor)
+                out[cursor] = elem.toByte()
                 cursor += 1
             }
         }
